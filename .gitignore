@@ -41,3 +41,11 @@ next-env.d.ts
 .env
 
 /media
+/data
+
+# sst
+.sst
+
+
+# open-next
+.open-next

@@ -1,8 +1,23 @@
 import Example from '@/components/Example'
+import Form from '@/components/form'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import Link from 'next/link'
 import React from 'react'
+import { Resource } from 'sst'
 
-const Page = () => {
+const Page = async () => {
+  const command = new PutObjectCommand({
+    Key: crypto.randomUUID(),
+    Bucket: Resource.MediaBucket.name,
+  })
+  const url = await getSignedUrl(
+    new S3Client({
+      region: 'us-east-1',
+    }),
+    command,
+  )
+
   return (
     <article className={['container'].filter(Boolean).join(' ')}>
       <h1>
@@ -50,6 +65,8 @@ const data = await payload.find({
 })`}
         </code>
       </pre>
+
+      <Form url={url} />
     </article>
   )
 }

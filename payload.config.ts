@@ -1,5 +1,5 @@
 import path from 'path'
-// import { postgresAdapter } from '@payloadcms/db-postgres'
+import { Resource } from 'sst'
 import {
   AlignFeature,
   BlockQuoteFeature,
@@ -19,10 +19,12 @@ import {
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
 //import { slateEditor } from '@payloadcms/richtext-slate'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
+// import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
 import { buildConfig } from 'payload/config'
-import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+import { cloudStorage } from '@payloadcms/plugin-cloud-storage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -50,26 +52,21 @@ export default buildConfig({
     {
       slug: 'media',
       upload: true,
-      fields: [
-        {
-          name: 'text',
-          type: 'text',
-        },
-      ],
+      fields: [],
     },
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  // db: postgresAdapter({
-  //   pool: {
-  //     connectionString: process.env.POSTGRES_URI || ''
-  //   }
-  // }),
-  db: mongooseAdapter({
-    url: process.env.MONGODB_URI || '',
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.POSTGRES_URI || '',
+    },
   }),
+  // db: mongooseAdapter({
+  //   url: process.env.MONGODB_URI || '',
+  // }),
   admin: {
     autoLogin: {
       email: 'dev@payloadcms.com',
@@ -93,11 +90,25 @@ export default buildConfig({
       })
     }
   },
+  plugins: [
+    cloudStorage({
+      collections: {
+        media: {
+          adapter: s3Adapter({
+            config: {
+              region: 'us-east-1',
+            },
+            bucket: Resource.MediaBucket.name,
+          }),
+        },
+      },
+    }),
+  ],
+
   // Sharp is now an optional dependency -
   // if you want to resize images, crop, set focal point, etc.
   // make sure to install it and pass it to the config.
 
   // This is temporary - we may make an adapter pattern
   // for this before reaching 3.0 stable
-  sharp,
 })

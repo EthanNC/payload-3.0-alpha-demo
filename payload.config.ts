@@ -23,8 +23,8 @@ import {
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3'
 import { buildConfig } from 'payload/config'
 import { fileURLToPath } from 'url'
-import { postgresAdapter } from '@payloadcms/db-postgres'
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage'
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -59,14 +59,14 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.POSTGRES_URI || '',
-    },
-  }),
-  // db: mongooseAdapter({
-  //   url: process.env.MONGODB_URI || '',
+  // db: postgresAdapter({
+  //   pool: {
+  //     connectionString: process.env.POSTGRES_URI || '',
+  //   },
   // }),
+  db: mongooseAdapter({
+    url: process.env.MONGODB_URI || '',
+  }),
   admin: {
     autoLogin: {
       email: 'dev@payloadcms.com',

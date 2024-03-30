@@ -1,12 +1,8 @@
 version: '3'
 services:
-  postgres:
-    image: postgres:latest
+  mongo:
+    image: mongo:latest
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/db:/data/db
     ports:
-      - 5432:5432
-    environment:
-      POSTGRES_DB: payloadtests
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: example
+      - 27017:27017

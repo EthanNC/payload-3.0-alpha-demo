@@ -17,6 +17,7 @@ const Page = async () => {
     }),
     command,
   )
+  console.log(process.env.MONGODB_CID)
 
   return (
     <article className={['container'].filter(Boolean).join(' ')}>
@@ -51,7 +52,7 @@ const Page = async () => {
         contains an example of a custom route running the Local API.
       </p>
 
-      <Example />
+      {/* <Example /> */}
 
       <p>You can use the Local API in your server components like this:</p>
       <pre>

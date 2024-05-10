@@ -17,7 +17,6 @@ const Page = async () => {
     }),
     command,
   )
-  console.log(process.env.MONGODB_CID)
 
   return (
     <article className={['container'].filter(Boolean).join(' ')}>

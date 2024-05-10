@@ -28,7 +28,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
-
+const connectionString = `mongodb+srv://${Resource.DatabaseUser.username}:${Resource.DatabaseUser.password}@${Resource.ClusterProd.name}.${Resource.ClusterProd.host}.mongodb.net/payload-dev?retryWrites=true`
 export default buildConfig({
   //editor: slateEditor({}),
   editor: lexicalEditor(),
@@ -65,7 +65,7 @@ export default buildConfig({
   //   },
   // }),
   db: mongooseAdapter({
-    url: process.env.MONGODB_URI || '',
+    url: connectionString,
   }),
   admin: {
     autoLogin: {
